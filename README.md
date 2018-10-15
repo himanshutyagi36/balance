@@ -2,6 +2,7 @@
 
 ## Pre-requisites
 - Connection to a mongodb server
+- node v8.x
 
 ## Setup
 - Navigate to the directory `balance` and run `npm install`

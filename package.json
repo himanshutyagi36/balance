@@ -1,0 +1,20 @@
+{
+  "name": "balanc3",
+  "version": "1.0.0",
+  "description": "A node server to query Ethereum txns and balances.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Himanshu Tyagi",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "mongoose": "^4.8.5",
+    "nodemon": "^1.18.4",
+    "web3": "^1.0.0-beta.36",
+    "winston": "^3.1.0"
+  }
+}

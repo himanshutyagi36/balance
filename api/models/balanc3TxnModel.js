@@ -1,10 +1,7 @@
 'use strict';
 
-
 const mongoose = require('../../utils/dbConnection');
 const Schema = mongoose.Schema;
-// const mongoosePaginate = require('mongoose-paginate');
-
 
 const transactionSchema = new Schema({
   blockNumber: {
@@ -67,5 +64,4 @@ const transactionSchema = new Schema({
 });
 
 transactionSchema.index({hash: 1}, { unique: true });
-// transactionSchema.plugin(mongoosePaginate);
 module.exports = mongoose.db.model('Transaction', transactionSchema);

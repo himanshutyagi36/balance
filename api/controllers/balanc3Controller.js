@@ -328,10 +328,6 @@ function getBalanceData(req,res) {
       _id: req.query.address.toString()
     };
     helper.queryBalanceAddress(query).then((results) => {
-      // responseData = {
-      //   account_address: results[0]._id,
-      //   account_balance: results[0].account_balance,
-      // };
       res.status(200).send(results);
     }, (err) => {
       logger.error(err);

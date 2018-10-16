@@ -2,7 +2,8 @@
 'use strict'
 const axios = require('axios');
 const logger = require('../../utils/logger');
-const helper = require('../../utils/helper');
+const helper = require('../../helpers/queryEtherscanHelper');
+const controllerHelper = require('../../helpers/balanc3ControllerHelper');
 const actions = require('../../utils/Actions');
 var mongoose = require('mongoose'),
   Balance = mongoose.model('Balance'),
@@ -12,8 +13,8 @@ var mongoose = require('mongoose'),
 const queryParameters = ["address", "from", "hash"];
 /**
  * 
- * @param {*} req 
- * @param {*} res 
+ * @param {object} req request object from api
+ * @param {object} res response object to be returned as result
  * This function is responsible to populate the database
  */
 function postData(req,res) {
@@ -31,26 +32,27 @@ function postData(req,res) {
 
 /**
  * 
- * @param {address to be queried on etherscan api} address 
- * @param {action parameter to be sent to etherscan api} action 
+ * @param {string} address address to be queried on etherscan api
+ * @param {string} action action parameter to be sent to etherscan api
  * This function gets the account balance from etherscan api. The address
  * and action are provided as a parameter.
  */
 function getBalanceFromApi (address, action) {
   var account_address = address;
   var action = action;
-  helper.queryEtherscan(address, action).then(() => {
+  helper.queryEtherscanNew(address, action).then(() => {
     return false;
   },(err) => {
-    logger.error(err);
+    console.log(err);
+    // logger.error(err);
     return true;
   });
 }
 
 /**
  * 
- * @param {address to be queried on etherscan api} address 
- * @param {action parameter to be sent to etherscan api} action 
+ * @param {string} address address to be queried on etherscan api
+ * @param {string} action action parameter to be sent to etherscan api
  * This function gets the normal transactions associated
  * with an address from etherscan api. The address
  * and action are provided as a parameter.
@@ -58,18 +60,19 @@ function getBalanceFromApi (address, action) {
 function getTransactionFromApi(address,action) {
   var account_address = address;
   var action = action;
-  helper.queryEtherscan(address, action).then(() => {
+  helper.queryEtherscanNew(address, action).then(() => {
     return false;
   },(err) => {
-    logger.error(err);
+    console.log(err);
+    // logger.error(err);
     return true;
   });
 }
 
 /**
  * 
- * @param {address to be queried on etherscan api} address 
- * @param {action parameter to be sent to etherscan api} action 
+ * @param {string} address address to be queried on etherscan api
+ * @param {string} action action parameter to be sent to etherscan api
  * This function gets the internal transactions associated
  * with an address from etherscan api. The address
  * and action are provided as a parameter.
@@ -77,17 +80,18 @@ function getTransactionFromApi(address,action) {
 function getIntTransactionFromApi(address,action) {
   var account_address = address;
   var action = action;
-  helper.queryEtherscan(address, action).then(() => {
+  helper.queryEtherscanNew(address, action).then(() => {
     return false;
   },(err) => {
-    logger.error(err);
+    console.log(err);
+    // logger.error(err);
     return true;
   });
 }
 /**
  * 
- * @param {request object from api call} req 
- * @param {response object to api query} res 
+ * @param {object} req request object from api call
+ * @param {object} res response object to api query
  * This function caters to the api query on "/normaltransaction" endpoint.
  * If no parameter is provided, return all normal transactions
  * else if address is provided, return all normal transactions of that address
@@ -101,13 +105,14 @@ function getNormalTxnData(req,res) {
   logger.debug("Getting normal transaction data...");
   if (Object.keys(req.query).length == 0) {
     var query = {};
-    helper.queryNormalTxn(query).then((results) => {
+    controllerHelper.queryNormalTxn(query).then((results) => {
       responseData = {
         message: results
       };
       res.status(200).send(responseData);
     }, (err) => {
-      logger.error(err);
+      console.log(err)
+      // logger.error(err);
       responseData = {
         message: err
       };
@@ -118,13 +123,14 @@ function getNormalTxnData(req,res) {
     var query = {
       contractAddress: req.query.address.toString()
     };
-    helper.queryNormalTxn(query).then((results) => {
+    controllerHelper.queryNormalTxn(query).then((results) => {
       responseData = {
         message: results
       };
       res.status(200).send(responseData);
     }, (err) => {
-      logger.error(err);
+      console.log(err);
+      // logger.error(err);
       responseData = {
         message: err
       };
@@ -135,13 +141,14 @@ function getNormalTxnData(req,res) {
     var query = {
       from: req.query.from.toString()
     };
-    helper.queryNormalTxn(query).then((results) => {
+    controllerHelper.queryNormalTxn(query).then((results) => {
       responseData = {
         message: results
       };
       res.status(200).send(responseData);
     }, (err) => {
-      logger.error(err);
+      console.log(err);
+      // logger.error(err);
       responseData = {
         message: err
       };
@@ -152,13 +159,14 @@ function getNormalTxnData(req,res) {
     var query = {
       to: req.query.to.toString()
     };
-    helper.queryNormalTxn(query).then((results) => {
+    controllerHelper.queryNormalTxn(query).then((results) => {
       responseData = {
         message: results
       };
       res.status(200).send(responseData);
     }, (err) => {
-      logger.error(err);
+      console.log(err);
+      // logger.error(err);
       responseData = {
         message: err
       };
@@ -169,13 +177,14 @@ function getNormalTxnData(req,res) {
     var query = {
       hash: req.query.hash.toString()
     };
-    helper.queryNormalTxn(query).then((results) => {
+    controllerHelper.queryNormalTxn(query).then((results) => {
       responseData = {
         message: results
       };
       res.status(200).send(responseData);
     }, (err) => {
-      logger.error(err);
+      console.log(err);
+      // logger.error(err);
       responseData = {
         message: err
       };
@@ -191,8 +200,8 @@ function getNormalTxnData(req,res) {
 
 /**
  * 
- * @param {request object from api call} req 
- * @param {response object to api query} res 
+ * @param {string} req request object from api call
+ * @param {object} res response object to api query
  * This function caters to the api query on "/internaltransaction" endpoint.
  * If no parameter is provided, return all internal transactions
  * else if address is provided, return all internal transactions of that address
@@ -206,13 +215,14 @@ function getInternalTxnData(req,res) {
   logger.debug("Getting internal transaction data...");
   if (Object.keys(req.query).length == 0) {
     var query = {};
-    helper.queryInternalTxn(query).then((results) => {
+    controllerHelper.queryInternalTxn(query).then((results) => {
       responseData = {
         message: results
       };
       res.status(200).send(responseData);
     }, (err) => {
-      logger.error(err);
+      console.log(err);
+      // logger.error(err);
       responseData = {
         message: err
       };
@@ -223,13 +233,14 @@ function getInternalTxnData(req,res) {
     var query = {
       contractAddress: req.query.address.toString()
     };
-    helper.queryInternalTxn(query).then((results) => {
+    controllerHelper.queryInternalTxn(query).then((results) => {
       responseData = {
         message: results
       };
       res.status(200).send(responseData);
     }, (err) => {
-      logger.error(err);
+      console.log(err);
+      // logger.error(err);
       responseData = {
         message: err
       };
@@ -240,13 +251,14 @@ function getInternalTxnData(req,res) {
     var query = {
       from: req.query.from.toString()
     };
-    helper.queryInternalTxn(query).then((results) => {
+    controllerHelper.queryInternalTxn(query).then((results) => {
       responseData = {
         message: results
       };
       res.status(200).send(responseData);
     }, (err) => {
-      logger.error(err);
+      console.log(err);
+      // logger.error(err);
       responseData = {
         message: err
       };
@@ -257,13 +269,14 @@ function getInternalTxnData(req,res) {
     var query = {
       to: req.query.to.toString()
     };
-    helper.queryInternalTxn(query).then((results) => {
+    controllerHelper.queryInternalTxn(query).then((results) => {
       responseData = {
         message: results
       };
       res.status(200).send(responseData);
     }, (err) => {
-      logger.error(err);
+      console.log(err);
+      // logger.error(err);
       responseData = {
         message: err
       };
@@ -274,13 +287,14 @@ function getInternalTxnData(req,res) {
     var query = {
       hash: req.query.hash.toString()
     };
-    helper.queryNormalTxn(query).then((results) => {
+    controllerHelper.queryNormalTxn(query).then((results) => {
       responseData = {
         message: results
       };
       res.status(200).send(responseData);
     }, (err) => {
-      logger.error(err);
+      console.log(err);
+      // logger.error(err);
       responseData = {
         message: err
       };
@@ -297,8 +311,8 @@ function getInternalTxnData(req,res) {
 
 /**
  * 
- * @param {request object from api call} req 
- * @param {response object to api query} res 
+ * @param {object} req request object from api call
+ * @param {object} res response object to api query
  * This function caters to the api query on "/balance" endpoint.
  * If no parameter is provided, return all balances and corresponding address
  * If address is provided, return balance of that address
@@ -309,14 +323,15 @@ function getBalanceData(req,res) {
   logger.debug("Getting balance data...");
   if (Object.keys(req.query).length == 0) {
     var query = {};
-    helper.queryBalanceAll(query).then((results) => {
+    controllerHelper.queryBalanceAll(query).then((results) => {
       responseData = {
         account_address: results[0]._id,
         account_balance: results[0].account_balance
       };
       res.status(200).send(responseData);
     }, (err) => {
-      logger.error(err);
+      console.log(err);
+      // logger.error(err);
       responseData = {
         message: err
       };
@@ -327,10 +342,11 @@ function getBalanceData(req,res) {
     var query = {
       _id: req.query.address.toString()
     };
-    helper.queryBalanceAddress(query).then((results) => {
+    controllerHelper.queryBalanceAddress(query).then((results) => {
       res.status(200).send(results);
     }, (err) => {
-      logger.error(err);
+      console.log(err);
+      // logger.error(err);
       responseData = {
         message: err
       };

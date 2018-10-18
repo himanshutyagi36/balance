@@ -37,6 +37,7 @@ async function saveTransaction(account_address, txList) {
     Transaction.findOneAndUpdate(query, txList[i], {upsert: true, new: true, runValidators: true},
       function(err, doc) {
         if (err) {
+          console.log(err);
           logger.error(err);
           return
       } else {
@@ -65,6 +66,7 @@ async function saveIntTransaction(account_address, txList) {
     IntTransaction.findOneAndUpdate(query, txList[i], {upsert: true, new: true, runValidators: true},
       function(err, doc) {
         if (err) {
+          console.log(err);
           logger.error(err);
           return
       } else {
@@ -76,7 +78,7 @@ async function saveIntTransaction(account_address, txList) {
 }
 
 /**
- * THIS FUNCTION IS LEGACY CODE. NOT USED ANYMORE. queryEtherscanNew() is used now.
+ * 
  * @param {string} account_address account address in consideration
  * @param {string} action the relevant action to query the etherscan api
  * This function makes api calls to the etherscan api. We query three different endpoints on etherscan.
@@ -85,56 +87,8 @@ async function saveIntTransaction(account_address, txList) {
  * I use the switch-case on action, to determine the appropriate function to be called to save data
  * to the database.
  */
-async function queryEtherscan(account_address, action) {
-  var apiUrlBal = `${process.env.API_URL}&action=${action}&address=${account_address}&tag=latest&apikey=${process.env.API_KEY_TOKEN}`;
-  var apiUrlTxNormal = `${process.env.API_URL}&action=${action}&address=${account_address}&startblock=0&endblock=99999999&sort=asc&apikey=${process.env.API_KEY_TOKEN}`
-  var apiUrlTxInternal = `${process.env.API_URL}&action=${action}&address=${account_address}&startblock=0&endblock=99999999&sort=asc&apikey=${process.env.API_KEY_TOKEN}`
-  return new Promise(function(resolve,reject){
-    var apiUrl;
-    if (action == actions.BALANCE)
-      apiUrl = apiUrlBal;
-    else if (apiUrl == actions.TXLIST)
-      apiUrl = apiUrlTxNormal;
-    else
-      apiUrl = apiUrlTxInternal;
-    axios.get(apiUrl)
-    .then(async function(response) {
-      if (response.data.status == 1) {
-        try {
-          switch(action) {
-            case actions.BALANCE:
-            await saveBalance(account_address, response.data.result);
-            break;
-            case actions.TXLIST:
-            logger.info("# of normal transaction: "+response.data.result.length);
-            await saveTransaction(account_address, response.data.result);
-            break;
-            case actions.TXLISTINTERNAL:
-            logger.info("# of internal transaction: "+response.data.result.length);
-            await saveIntTransaction(account_address, response.data.result);
-            break;
-          }        
-        } catch (err) {
-          logger.error(err);
-          reject(err);
-        }
-        resolve();
-      }
-      
-    })
-    .catch(error => {
-      logger.error(error);
-      reject(err);
-    });
-  })  
-}
-/**
- * 
- * @param {string} account_address account address in consideration
- * @param {string} action the relevant action to query the etherscan api
- */
 async function queryEtherscanNew(account_address,action) {
-  return new Promise(function(resolve,reject) {
+  return new Promise(async function(resolve,reject) {
     switch(action){
       case actions.BALANCE:
         axios.get(process.env.API_URL, {
@@ -159,13 +113,12 @@ async function queryEtherscanNew(account_address,action) {
         });
         break;
       case actions.TXLIST:
-        // console.log(action);
         axios.get(process.env.API_URL, {
           params: {
             action: action,
             address: account_address,
             startblock: '0',
-            endblock: 'latest',
+            endblock: '99999999',
             sort: 'asc',
             apikey: process.env.API_KEY_TOKEN
           }
@@ -216,6 +169,5 @@ async function queryEtherscanNew(account_address,action) {
 }
 
 module.exports = {
-  queryEtherscan,
   queryEtherscanNew
 }

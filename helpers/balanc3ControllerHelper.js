@@ -161,7 +161,7 @@ function queryBalanceAddress(query) {
             var4 = await fromCountInternal(acc_address);
             } catch(e) {
             console.log(e);
-            logger.error(e);
+            // logger.error(e);
             }
             returnRes['account_address'] = results[0]._id;
             returnRes['account_balance'] = results[0].account_balance;

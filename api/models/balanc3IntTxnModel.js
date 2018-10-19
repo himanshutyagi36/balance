@@ -57,5 +57,5 @@ const internalTransactionSchema = new Schema({
   }
 });
 
-internalTransactionSchema.index({hash: 2});
+internalTransactionSchema.index({hash: 1});
 module.exports = mongoose.db.model('IntTransaction', internalTransactionSchema);
